@@ -29,3 +29,6 @@ dist/
 # OS Files
 .DS_Store
 Thumbs.db
+
+# Project-specific ignored files
+reader.md
