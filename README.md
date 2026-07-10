@@ -2,8 +2,6 @@
 
 Build a reasoning AI job coach that evolves from a basic LLM call into a full agent with real-time job search, skills gap analysis, and conversation memory.
 
-> **Note:** This zip does not include a `.env` file — you must create your own with your API keys (see Setup below).
-
 ## Features
 
 - **6 stages** — Each page shows the agent at a different level of capability: naive LLM → resume context → tool use → ReAct loop → persistent memory → full pipeline agent

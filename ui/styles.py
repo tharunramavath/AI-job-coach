@@ -1,15 +1,18 @@
 import os
 import streamlit as st
 
+
 def fetch_models(api_key: str) -> list[str]:
     if not api_key or len(api_key) < 10:
         return []
     try:
         from groq import Groq
+
         client = Groq(api_key=api_key)
         models_resp = client.models.list()
         valid_models = [
-            m.id for m in models_resp.data
+            m.id
+            for m in models_resp.data
             if "llama" in m.id or "mixtral" in m.id or "gemma" in m.id
         ]
         if not valid_models:
@@ -328,31 +331,36 @@ footer { visibility: hidden; }
 
 def apply_base_style():
     st.markdown(CSS, unsafe_allow_html=True)
-    
+
     # Initialize session states
     if "groq_api_key" not in st.session_state:
         st.session_state.groq_api_key = os.getenv("GROQ_API_KEY", "")
-        
+
     if "groq_models_list" not in st.session_state:
         st.session_state.groq_models_list = []
         if st.session_state.groq_api_key:
-            st.session_state.groq_models_list = fetch_models(st.session_state.groq_api_key)
-            
+            st.session_state.groq_models_list = fetch_models(
+                st.session_state.groq_api_key
+            )
+
     if "groq_model" not in st.session_state:
         st.session_state.groq_model = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+
+    if "jina_api_key" not in st.session_state:
+        st.session_state.jina_api_key = os.getenv("JINA_API_KEY", "")
 
     # API & Model sidebar controls
     st.sidebar.markdown("---")
     st.sidebar.subheader("🔑 API & Model Settings")
-    
+
     api_key_input = st.sidebar.text_input(
         "Groq API Key",
         value=st.session_state.groq_api_key,
         type="password",
         placeholder="gsk_...",
-        help="Get your key from console.groq.com"
+        help="Get your key from console.groq.com",
     )
-    
+
     if api_key_input != st.session_state.groq_api_key:
         st.session_state.groq_api_key = api_key_input
         with st.sidebar.spinner("Fetching available models..."):
@@ -368,10 +376,12 @@ def apply_base_style():
 
     if st.session_state.groq_models_list:
         try:
-            default_index = st.session_state.groq_models_list.index(st.session_state.groq_model)
+            default_index = st.session_state.groq_models_list.index(
+                st.session_state.groq_model
+            )
         except ValueError:
             default_index = 0
-            
+
         selected_model = st.sidebar.selectbox(
             "Select Model",
             options=st.session_state.groq_models_list,
@@ -383,6 +393,21 @@ def apply_base_style():
             st.sidebar.warning("Failed to fetch models. Check key.")
         else:
             st.sidebar.info("Enter Groq API Key to populate models.")
+
+    st.sidebar.markdown("---")
+    st.sidebar.subheader("🔎 Jina Search API")
+
+    jina_key_input = st.sidebar.text_input(
+        "Jina API Key",
+        value=st.session_state.jina_api_key,
+        type="password",
+        placeholder="jina_...",
+        help="Get your free key from jina.ai (no credit card needed)",
+    )
+
+    if jina_key_input != st.session_state.jina_api_key:
+        st.session_state.jina_api_key = jina_key_input
+        st.rerun()
 
 
 def stage_header(stage_num: int, title: str, duration: str, concept: str):

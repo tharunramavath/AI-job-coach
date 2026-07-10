@@ -10,11 +10,11 @@ load_dotenv()
 
 def search_jobs(query: str, num_results: int = 4) -> list[dict]:
     """Search for real job listings using Jina Search API."""
-    api_key = os.getenv("JINA_API_KEY")
+    api_key = st.session_state.get("jina_api_key") or os.getenv("JINA_API_KEY")
     if not api_key:
-        raise ValueError("JINA_API_KEY not set in .env")
+        raise ValueError("JINA_API_KEY not set. Please enter it in the sidebar.")
 
-    search_query = f'site:linkedin.com/jobs/view/ OR site:naukri.com/job-listings/ OR site:indeed.com/viewjob {query}'
+    search_query = f"site:linkedin.com/jobs/view/ OR site:naukri.com/job-listings/ OR site:indeed.com/viewjob {query}"
     headers = {
         "Authorization": f"Bearer {api_key}",
         "Accept": "application/json",
@@ -35,11 +35,13 @@ def search_jobs(query: str, num_results: int = 4) -> list[dict]:
 
     results = []
     for item in data.get("data", [])[:num_results]:
-        results.append({
-            "title": item.get("title", "No title"),
-            "url": item.get("url", ""),
-            "snippet": item.get("description", item.get("content", ""))[:300],
-        })
+        results.append(
+            {
+                "title": item.get("title", "No title"),
+                "url": item.get("url", ""),
+                "snippet": item.get("description", item.get("content", ""))[:300],
+            }
+        )
     return results
 
 
@@ -61,14 +63,16 @@ def chat(messages: list[dict], system: str = None, temperature: float = 0.7) -> 
     api_key = st.session_state.get("groq_api_key") or os.getenv("GROQ_API_KEY")
     if not api_key:
         raise ValueError("GROQ_API_KEY not set. Please enter it in the sidebar.")
-    model = st.session_state.get("groq_model") or os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
-    
+    model = st.session_state.get("groq_model") or os.getenv(
+        "GROQ_MODEL", "llama-3.3-70b-versatile"
+    )
+
     client = Groq(api_key=api_key)
     full_messages = []
     if system:
         full_messages.append({"role": "system", "content": system})
     full_messages.extend(messages)
-    
+
     response = client.chat.completions.create(
         model=model,
         messages=full_messages,
@@ -121,7 +125,9 @@ def run_stage_4(user_query: str, resume_context: str = "") -> list[dict]:
         messages.append({"role": "assistant", "content": response})
 
         # Parse Thought
-        thought_match = re.search(r"Thought:\s*(.+?)(?=Action:|Final Answer:|$)", response, re.DOTALL)
+        thought_match = re.search(
+            r"Thought:\s*(.+?)(?=Action:|Final Answer:|$)", response, re.DOTALL
+        )
         if thought_match:
             steps.append({"type": "thought", "content": thought_match.group(1).strip()})
 
@@ -150,7 +156,9 @@ def run_stage_4(user_query: str, resume_context: str = "") -> list[dict]:
                     observation = f"Search failed: {str(e)}"
 
             steps.append({"type": "observation", "content": observation})
-            messages.append({"role": "user", "content": f"Observation:\n{observation}\n\nContinue."})
+            messages.append(
+                {"role": "user", "content": f"Observation:\n{observation}\n\nContinue."}
+            )
         else:
             # No action found — treat the whole response as final
             steps.append({"type": "final", "content": response})
@@ -160,20 +168,29 @@ def run_stage_4(user_query: str, resume_context: str = "") -> list[dict]:
     has_final = any(step["type"] == "final" for step in steps)
     if not has_final:
         # Request a final answer forcing the agent to summarize
-        messages.append({
-            "role": "user",
-            "content": "You have reached the maximum allowed reasoning steps. Please synthesize all thoughts and observations so far and provide your Final Answer to the user now."
-        })
+        messages.append(
+            {
+                "role": "user",
+                "content": "You have reached the maximum allowed reasoning steps. Please synthesize all thoughts and observations so far and provide your Final Answer to the user now.",
+            }
+        )
         try:
             fallback_response = chat(messages, system=system, temperature=0.3)
-            final_match = re.search(r"Final Answer:\s*(.+)", fallback_response, re.DOTALL)
+            final_match = re.search(
+                r"Final Answer:\s*(.+)", fallback_response, re.DOTALL
+            )
             if final_match:
                 steps.append({"type": "final", "content": final_match.group(1).strip()})
             else:
-                clean_res = fallback_response.replace("Thought:", "").replace("Final Answer:", "").strip()
+                clean_res = (
+                    fallback_response.replace("Thought:", "")
+                    .replace("Final Answer:", "")
+                    .strip()
+                )
                 steps.append({"type": "final", "content": clean_res})
         except Exception as e:
-            steps.append({"type": "final", "content": f"Failed to generate final answer: {e}"})
+            steps.append(
+                {"type": "final", "content": f"Failed to generate final answer: {e}"}
+            )
 
     return steps
-

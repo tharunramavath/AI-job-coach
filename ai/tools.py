@@ -1,5 +1,6 @@
 import os
 import requests
+import streamlit as st
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -12,14 +13,11 @@ def search_jobs(query: str, num_results: int = 5) -> list[dict]:
     Search for real job listings using Jina Search API.
     Returns a list of job result dicts with title, url, snippet.
     """
-    api_key = os.getenv("JINA_API_KEY")
+    api_key = st.session_state.get("jina_api_key") or os.getenv("JINA_API_KEY")
     if not api_key:
-        raise ValueError("JINA_API_KEY not set in .env")
+        raise ValueError("JINA_API_KEY not set. Please enter it in the sidebar.")
 
-    search_query = (
-        f'site:linkedin.com/jobs/view/ OR site:naukri.com/job-listings/ OR site:indeed.com/viewjob {query}'
-    )
-
+    search_query = f"site:linkedin.com/jobs/view/ OR site:naukri.com/job-listings/ OR site:indeed.com/viewjob {query}"
 
     headers = {
         "Authorization": f"Bearer {api_key}",
@@ -66,11 +64,34 @@ def format_jobs_for_llm(jobs: list[dict]) -> str:
 
 
 COMMON_SKILLS = [
-    "python", "machine learning", "deep learning", "tensorflow", "pytorch",
-    "sql", "react", "javascript", "docker", "kubernetes", "aws", "gcp",
-    "azure", "java", "c++", "data engineering", "nlp", "computer vision",
-    "spark", "tableau", "excel", "git", "rest api", "django", "flask", "fastapi"
+    "python",
+    "machine learning",
+    "deep learning",
+    "tensorflow",
+    "pytorch",
+    "sql",
+    "react",
+    "javascript",
+    "docker",
+    "kubernetes",
+    "aws",
+    "gcp",
+    "azure",
+    "java",
+    "c++",
+    "data engineering",
+    "nlp",
+    "computer vision",
+    "spark",
+    "tableau",
+    "excel",
+    "git",
+    "rest api",
+    "django",
+    "flask",
+    "fastapi",
 ]
+
 
 def analyze_skills_gap(background: str, job_description: str) -> dict:
     """
@@ -79,25 +100,24 @@ def analyze_skills_gap(background: str, job_description: str) -> dict:
     """
     bg_lower = background.lower()
     jd_lower = job_description.lower()
-    
+
     user_skills = [skill for skill in COMMON_SKILLS if skill in bg_lower]
     required_skills = [skill for skill in COMMON_SKILLS if skill in jd_lower]
-    
+
     if not required_skills:
         return {
             "match_score": 100,
             "matching_skills": user_skills,
-            "missing_skills": []
+            "missing_skills": [],
         }
-        
+
     matching = [skill for skill in required_skills if skill in user_skills]
     missing = [skill for skill in required_skills if skill not in user_skills]
-    
+
     score = int((len(matching) / len(required_skills)) * 100)
-    
+
     return {
         "match_score": score,
         "matching_skills": matching,
-        "missing_skills": missing
+        "missing_skills": missing,
     }
-
