@@ -23,7 +23,7 @@ def render_stage_runner(stage_num: int):
         
         stage_header(
             stage_num=1,
-            title="The Dumb Oracle",
+            title="Naive LLM (Contextless Response)",
             duration="10 min",
             concept="Just call an LLM with no context. Watch how useless it is.",
         )
@@ -46,7 +46,7 @@ def render_stage_runner(stage_num: int):
         
         stage_header(
             stage_num=2,
-            title="Give It a Brain: Memory",
+            title="Context & Memory (Resume Ingestion)",
             duration="15 min",
             concept="Paste your resume. The system prompt becomes the agent's short-term memory.",
         )
@@ -81,7 +81,7 @@ def render_stage_runner(stage_num: int):
         
         stage_header(
             stage_num=3,
-            title="Give It Eyes: Tools",
+            title="LLM & Tools (Job Search & Analytics)",
             duration="20 min",
             concept="Add a real-time job search tool. It stops being a chatbot and starts being an agent.",
         )
@@ -119,7 +119,7 @@ def render_stage_runner(stage_num: int):
         
         stage_header(
             stage_num=4,
-            title="Give It Judgment: ReAct Loop",
+            title="ReAct Agent (Autonomous Loop)",
             duration="15 min",
             concept="Thought → Action → Observation. Watch the agent decide when to search vs when to reason.",
         )
@@ -177,7 +177,7 @@ def render_stage_runner(stage_num: int):
         
         stage_header(
             stage_num=5,
-            title="Give It Continuity: Persistent Memory",
+            title="Persistent Memory (Multi-Turn Continuity)",
             duration="10 min",
             concept="It remembers what you said 3 messages ago and factors it in automatically.",
         )
@@ -226,7 +226,7 @@ def render_stage_runner(stage_num: int):
         
         stage_header(
             stage_num=6,
-            title="The Full Agent",
+            title="The Full Agent (All Wired Together)",
             duration="15 min",
             concept="Resume context + real job search + conversation memory. All wired together.",
         )

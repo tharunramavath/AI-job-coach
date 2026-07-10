@@ -13,18 +13,22 @@ def search_jobs(query: str, num_results: int = 5) -> list[dict]:
     if not api_key:
         raise ValueError("JINA_API_KEY not set in .env")
 
-    search_query = f'site:linkedin.com/jobs/view/ OR site:naukri.com/job-listings/ OR site:indeed.com/viewjob "{query}"'
+    search_query = f'site:linkedin.com/jobs/view/ OR site:naukri.com/job-listings/ OR site:indeed.com/viewjob {query}'
     headers = {
         "Authorization": f"Bearer {api_key}",
         "Accept": "application/json",
+        "Content-Type": "application/json",
         "X-With-Generated-Alt": "true",
     }
 
-    response = requests.get(
-        "https://s.jina.ai/" + requests.utils.quote(search_query),
+    response = requests.post(
+        "https://s.jina.ai",
         headers=headers,
+        json={"q": search_query},
         timeout=30,
     )
+    if response.status_code == 422:
+        return []
     response.raise_for_status()
     data = response.json()
 

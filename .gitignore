@@ -1,14 +1,12 @@
 # Environment variables / Credentials
 .env
 .env.local
-.env.*
 
 # Python Virtual Environments
 venv/
 .venv/
 env/
 ENV/
-ActiveState.venv/
 
 # Python Cache & Packaging
 __pycache__/
@@ -22,13 +20,9 @@ build/
 dist/
 *.egg-info/
 
-# Streamlit config (local configurations)
-.streamlit/config.toml
-.streamlit/secrets.toml
+# Streamlit local config
+.streamlit/
 
 # OS Files
 .DS_Store
 Thumbs.db
-
-# Project-specific ignored files
-reader.md

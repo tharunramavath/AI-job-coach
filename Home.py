@@ -114,7 +114,7 @@ st.markdown(
         <div class="stage-title">NAIVE LLM</div>
         <div class="stage-desc">Direct LLM call without tools, memory, or context.</div>
       </div>
-      <a href="./1_Stage_1_Dumb_Oracle" target="_self" class="stage-arrow-btn">→</a>
+      <a href="./Stage_1_Naive_LLM" target="_self" class="stage-arrow-btn">→</a>
     </div>
 
     <!-- Stage 02 -->
@@ -124,7 +124,7 @@ st.markdown(
         <div class="stage-title">CONTEXT & MEMORY</div>
         <div class="stage-desc">Resume context injected into the system prompt.</div>
       </div>
-      <a href="./2_Stage_2_Memory" target="_self" class="stage-arrow-btn">→</a>
+      <a href="./Stage_2_Memory_and_Context" target="_self" class="stage-arrow-btn">→</a>
     </div>
 
     <!-- Stage 03 -->
@@ -134,7 +134,7 @@ st.markdown(
         <div class="stage-title">LLM + TOOLS</div>
         <div class="stage-desc">Real-time job search tool integration via Jina API.</div>
       </div>
-      <a href="./3_Stage_3_Tools" target="_self" class="stage-arrow-btn">→</a>
+      <a href="./Stage_3_LLM_and_Tools" target="_self" class="stage-arrow-btn">→</a>
     </div>
 
     <!-- Stage 04 -->
@@ -144,7 +144,7 @@ st.markdown(
         <div class="stage-title">REACT AGENT</div>
         <div class="stage-desc">Thought → Action → Observation autonomous loop.</div>
       </div>
-      <a href="./4_Stage_4_ReAct" target="_self" class="stage-arrow-btn">→</a>
+      <a href="./Stage_4_ReAct_Agent" target="_self" class="stage-arrow-btn">→</a>
     </div>
 
     <!-- Stage 05 -->
@@ -154,7 +154,7 @@ st.markdown(
         <div class="stage-title">PERSISTENT MEMORY</div>
         <div class="stage-desc">Active conversation memory across multi-turn messages.</div>
       </div>
-      <a href="./5_Stage_5_Persistent_Memory" target="_self" class="stage-arrow-btn">→</a>
+      <a href="./Stage_5_Persistent_Memory" target="_self" class="stage-arrow-btn">→</a>
     </div>
 
     <!-- Stage 06 -->
@@ -164,7 +164,7 @@ st.markdown(
         <div class="stage-title">FULL AGENT</div>
         <div class="stage-desc">LangGraph-inspired wiring of memory, reasoning, and tools.</div>
       </div>
-      <a href="./6_Stage_6_Full_Agent" target="_self" class="stage-arrow-btn">→</a>
+      <a href="./Stage_6_The_Full_Agent" target="_self" class="stage-arrow-btn">→</a>
     </div>
     """,
     unsafe_allow_html=True,

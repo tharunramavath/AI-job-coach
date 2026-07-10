@@ -1,6 +1,21 @@
-# AI Job Agent — Gradientts Workshop
+# AI Job Agent
 
-Build a reasoning AI job coach from scratch in 90 minutes.
+Build a reasoning AI job coach that evolves from a basic LLM call into a full agent with real-time job search, skills gap analysis, and conversation memory.
+
+> **Note:** This zip does not include a `.env` file — you must create your own with your API keys (see Setup below).
+
+## Features
+
+- **6 stages** — Each page shows the agent at a different level of capability: naive LLM → resume context → tool use → ReAct loop → persistent memory → full pipeline agent
+- **Real-time job search** — Searches live job listings via the Jina Reader API
+- **Skills gap analysis** — Locally compares your resume against job descriptions (no LLM needed)
+- **Conversation memory** — Remembers preferences across multi-turn chats
+
+## Prerequisites
+
+- Python 3.10+
+- A [Groq](https://console.groq.com) API key (free tier)
+- A [Jina](https://jina.ai) API key (free tier, no credit card)
 
 ## Setup
 
@@ -10,49 +25,48 @@ pip install -r requirements.txt
 
 # 2. Set API keys
 cp .env.example .env
-# Edit .env and add:
-#   GROQ_API_KEY=...    → https://console.groq.com
-#   JINA_API_KEY=...    → https://jina.ai (free tier, no credit card)
+# Edit .env and add your keys:
+#   GROQ_API_KEY=gsk_...
+#   JINA_API_KEY=jina_...
 
-# 3. Run
+# 3. Launch the app
 streamlit run Home.py
 ```
+
+You can also enter your Groq API key directly in the app's sidebar — it will fetch available models automatically.
 
 ## Project Structure
 
 ```
-job_agent_workshop/
-│
-├── Home.py                        # Landing page
-│
-├── pages/
-│   ├── 1_Stage_1_Dumb_Oracle.py  # Just an LLM, no context
-│   ├── 2_Stage_2_Memory.py       # Resume as system prompt context
-│   ├── 3_Stage_3_Tools.py        # Real job search via Jina API
-│   ├── 4_Stage_4_ReAct.py        # Thought → Action → Observation loop
-│   ├── 5_Stage_5_Persistent_Memory.py  # In-session conversation memory
-│   └── 6_Stage_6_Full_Agent.py   # Everything wired together
-│
-├── ai/
-│   ├── llm.py      # Groq LLaMA 3.1 70B client
-│   ├── tools.py    # Jina Search API (real job listings)
-│   ├── react.py    # ReAct loop logic
-│   └── memory.py   # In-session memory helpers
-│
-└── ui/
-    └── styles.py   # Minimal white UI, shared across all pages
+├── Home.py                        # Landing page with stage navigation
+├── pages/                         # Streamlit multi-page app files
+│   ├── 1_Stage_1_Naive_LLM.py
+│   ├── 2_Stage_2_Memory_and_Context.py
+│   ├── 3_Stage_3_LLM_and_Tools.py
+│   ├── 4_Stage_4_ReAct_Agent.py
+│   ├── 5_Stage_5_Persistent_Memory.py
+│   └── 6_Stage_6_The_Full_Agent.py
+├── stages/                        # Core stage logic (imported by pages)
+│   ├── stage_1_oracle.py
+│   ├── stage_2_memory.py
+│   ├── stage_3_tools.py
+│   ├── stage_4_react.py
+│   ├── stage_5_persistent_memory.py
+│   └── stage_6_full_agent.py
+├── ai/                            # AI modules
+│   ├── llm.py                     # Groq LLaMA client
+│   ├── tools.py                   # Jina search + skills gap analyzer
+│   ├── react.py                   # ReAct loop logic
+│   └── memory.py                  # Session memory helpers
+├── ui/                            # UI components
+│   ├── styles.py                  # Global styling, sidebar controls
+│   └── runner.py                  # Stage renderer (wires stages to pages)
+└── requirements.txt
 ```
-
-## Teaching flow
-
-Each page = one stage. During the live class:
-- Show only the relevant page
-- The AI logic lives in `ai/` — explain that in the terminal/editor
-- The UI is intentionally minimal — your PPT carries the visual story
 
 ## API Keys
 
 | Key | Where to get | Cost |
 |-----|-------------|------|
-| `GROQ_API_KEY` | console.groq.com | Free tier available |
-| `JINA_API_KEY` | jina.ai | Free — 1M tokens/month, no credit card |
+| `GROQ_API_KEY` | [console.groq.com](https://console.groq.com) | Free tier available |
+| `JINA_API_KEY` | [jina.ai](https://jina.ai) | Free — 1M tokens/month, no credit card |
